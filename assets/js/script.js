@@ -30,10 +30,59 @@ var loadTasks = function() {
       done: []
     };
   }
+//sortable
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  
+  activate: function(event) {
+    console.log("activate", this);
+  },
+  deactivate: function(event) {
+    console.log("deactivate", this);
+  },
+  over: function(event) {
+    console.log("over", event.target);
+  },
+  out: function(event) {
+    console.log("out", event.target);
+  },
+ 
+  update: function(event) {
+var tempArr = []
+    $(this).children().each(function(){
+     var text = $(this)
+     .find("p")
+     .text()
+     .trim();
+
+     var date = $(this)
+     .find("span")
+     .text()
+     .trim();
+  tempArr.push({
+    text:text,
+    date: date
+  });
+
+  });
+  var arrName = $(this)
+    .attr("id")
+    .replace("list-", '');
+
+  tasks[arrName] = tempArr;
+  saveTasks();
+  console.log(tempArr);
+  }
+})
+  
+
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
+
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -54,7 +103,7 @@ $(".list-group").on("click", "p" ,function(){
   .val(text);
   $(this).replaceWith(textInput);
   textInput.trigger("focus");
-  console.log(text);
+
 });
 // saved edited task
 $(".list-group").on("blur", "textarea", function(){
