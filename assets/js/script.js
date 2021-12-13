@@ -43,9 +43,47 @@ var loadTasks = function() {
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+
 };
 
+// edit a task text area and focus
+$(".list-group").on("click", "p" ,function(){
+  var text = $(this).text();
+  var textInput = $("<textarea>")
+  .addClass("form-control")
+  .val(text);
+  $(this).replaceWith(textInput);
+  textInput.trigger("focus");
+  console.log(text);
+});
+// saved edited task
+$(".list-group").on("blur", "textarea", function(){
+  //get current textare value
+var text = $(this)
+.val()
+.trim()
+//get parent ul attribute
+var status = $(this)
+  .closest(".list-group")
+  .attr("id")
+  .replace("list-", "");
 
+  // get task position
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+    //assemble new task
+tasks[status][index] = text;
+saveTasks();
+//recreate p element
+var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+  //replace text areas with p element
+  $(this).replaceWith(taskP);
+
+})
 
 
 // modal was triggered
